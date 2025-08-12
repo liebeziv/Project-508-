@@ -1,0 +1,234 @@
+恶意软件检测与逆向工程知识点
+1. 恶意软件检测 - 签名 (Malware Detection - Signatures)
+签名创建与存储
+
+检测流程: 一旦检测到文件是/包含恶意软件，需要存储和共享这些信息
+签名定义: 任何能够帮助识别恶意软件的信息
+系统架构: 恶意软件分析 → 签名数据库 → 环境引擎 → 规则执行引擎 → 签名检测
+
+2. YARA 签名工具
+YARA 基本特性
+
+开源多平台恶意软件检测和识别工具 (Open-source multi-platform malware detection and identification tool)
+允许基于文本或十六进制字符串创建签名 (Allows creation of signatures based on text or hex strings)
+仅适用于字符串和模式匹配 (Only works with strings and patterns)
+
+YARA 规则语法
+yararule silent_banker : banker
+{
+    strings:
+        $a = {6A 40 68 00 30 00 00 6A 14 8D 91}  // 十六进制字符串
+        $b = {8D 4D B0 2B C1 83 C0 27 99 6A 4E 59 F7 F9}
+        $c = "UVODFRYSIHLNWPEJXQZAKCBGMT"         // 文本字符串
+    condition:
+        $a or $b or $c
+}
+YARA 规则组成
+
+规则名称: 每个规则都有字母数字名称
+字符串定义: 规则定义使用的字符串
+三种字符串类型: 文本(Text)、十六进制(Hexadecimal)、正则表达式(Regex)
+条件语句: 使用布尔代数定义字符串条件
+
+YARA 关键字
+常用关键字包括: all, any, ascii, at, base64, condition, contains, endswith, entrypoint, false, filesize, for, fullword, global, import, in, include, matches, meta, nocase, none, not, of, or, private, rule, startswith, strings, them, true, wide, xor, defined 等
+YARA 优势
+
+复杂签名创建: 可使用布尔运算符、通配符、正则表达式等创建复杂签名
+模块支持: 具有PE、ELF、Magic、Time等模块，可进行更深入的文件检查
+可扩展性: 可编写自定义模块并集成到Python代码中
+软件集成: 可与ClamAV等其他软件集成
+
+3. ClamAV 签名类型
+多种签名方式
+
+基于哈希的签名 (Hash based signatures)
+
+文件哈希
+特定PE节的哈希
+
+
+基于内容的签名 (Body based signatures)
+
+恶意软件主体的十六进制字符串片段
+额外的正则表达式支持
+
+
+容器元数据签名: 使用zip、7z、mscab等容器的元数据
+字节码签名: 以C函数形式的更复杂签名
+钓鱼URL签名: 可疑HTML链接
+逻辑签名: 组合多个基于哈希的签名
+
+4. 静态分析面临的挑战
+主要挑战
+
+新恶意软件: 需要保持更新
+代码混淆 (Code obfuscation): 恶意软件作者使用各种混淆技术隐藏信息
+
+5. 代码混淆技术
+混淆定义与目的
+
+混淆是指模糊有意义信息的过程 (Obfuscation refers to a process of obscuring meaningful information)
+恶意软件作者使用混淆技术使检测和分析变得困难 (Malware authors use obfuscation techniques to make detection and analysis difficult)
+
+混淆方法
+
+加壳 (Packing): 可用于混淆代码
+加密: 也可用于混淆恶意代码
+
+加密算法不需要很强
+弱但快速的算法即可，目标是混淆而非安全
+
+
+
+6. 多态代码 (Polymorphic Code)
+多态代码特征
+
+每次恶意软件传播时，都会创建自己的新加密副本 (Every time malware propagates, it creates a newly encrypted copy of itself)
+新一代可能使用不同的密钥或随机填充 (New generation may use different key or random padding)
+解密器首先运行，然后解密加密代码并将控制权移至入口点 (Decryptor runs first, then decrypts encrypted code and moves control to entry point)
+
+多态传播过程
+加密恶意软件 → 解密器+密钥 → 解密恶意软件 → 解密器+密钥+加密器 → 加密恶意软件+解密器+新密钥
+7. 变形代码 (Metamorphic Code)
+变形代码特征
+
+每次恶意软件传播时都生成语法上不同的版本 (Every time malware propagates, it generates a syntactically different version)
+恶意软件携带代码重写器 (Malware carries a code re-writer)
+基于旧代码重写功能相同但语义不同的新代码 (Rewrites new code based on old code that is functionally same but semantically different)
+
+变形技术
+简单技术:
+
+添加NOP指令
+添加垃圾指令和循环
+置换使用的寄存器
+
+高级技术:
+
+函数重排序
+程序流修改(重新排序)
+数据结构修改
+
+变形混淆示例
+从文档图片可见四种混淆方式:
+
+原始代码: call 0h, pop ebx, lea ecx [ebx + 42h], push ecx, push eax...
+通过垃圾代码插入混淆: 在原代码中插入nop等无用指令
+通过重排序混淆: 改变指令执行顺序但保持功能不变
+通过加密混淆: 使用xor等加密操作和循环结构
+
+8. 逆向工程 (Reverse Engineering)
+逆向工程定义
+
+理解计算机程序如何完成任务 (Understanding how a computer program completes a task)
+可用信息很少或没有 (Very little or no information available)
+拆解行为 (Act of dismantling)
+涉及演绎推理 (Involves deductive reasoning)
+
+恶意软件逆向工程
+
+涉及伦理和非伦理问题
+
+9. 代码层次结构
+三层代码结构
+
+源代码 (Source Code): z = x + y; y++;
+汇编语言 (Assembly Language): load x, add y, store z, load y, inc, store y (通过汇编器转换)
+机器码 (Machine Code): 10010010, 10110100, 11010001...
+
+10. 逆向工程工具
+反汇编/反编译工具
+
+代码重构 (Code reconstruction)
+文档化 (Documentation)
+
+主要工具
+
+Ghidra: 软件逆向工程工具套件
+IDA Pro
+Radare2
+Wireshark
+dnSpy
+其他反汇编器
+
+静态分析工具
+
+CFF Explorer
+Utilities: File, Strings
+PE Tools
+PEiD
+Objdump
+
+
+可能的考试题目与答案
+选择题 (MCQs)
+Q1: YARA规则中可以使用的字符串类型有哪些？
+A. 仅文本字符串
+B. 仅十六进制字符串
+C. 文本、十六进制和正则表达式
+D. 仅正则表达式
+答案: C
+Q2: 多态代码(Polymorphic Code)的主要特征是什么？
+A. 代码永远不变
+B. 每次传播时创建相同的副本
+C. 每次传播时创建新的加密副本
+D. 只使用一种加密密钥
+答案: C
+Q3: 变形代码(Metamorphic Code)与多态代码的区别是什么？
+A. 变形代码使用加密，多态代码不使用
+B. 变形代码生成语法上不同的版本，多态代码只是重新加密
+C. 两者完全相同
+D. 变形代码更简单
+答案: B
+简答题 (Short Questions)
+Q4: 解释什么是代码混淆，恶意软件作者为什么要使用混淆技术？
+答案: 代码混淆是指模糊有意义信息的过程。恶意软件作者使用混淆技术的目的是隐藏信息并修改恶意内容，使安全分析师难以进行检测和分析。常用的混淆方法包括加壳(packing)和加密，其中加密算法不需要很强，弱但快速的算法即可满足混淆目的。
+Q5: 描述YARA规则的基本结构。
+答案: YARA规则包含以下基本组成部分：
+
+规则名称：每个规则都有唯一的字母数字名称
+字符串定义：在strings部分定义用于匹配的字符串
+字符串类型：支持文本、十六进制和正则表达式三种类型
+条件语句：使用布尔代数定义匹配条件，如使用or、and等逻辑运算符
+
+长答题 (Long Questions)
+Q6: 详细比较多态代码和变形代码的区别，并解释它们如何增加恶意软件检测的难度。
+答案:
+多态代码(Polymorphic Code):
+
+每次传播时创建新的加密副本
+可能使用不同的密钥或随机填充
+解密器首先运行，解密后执行原始代码
+核心代码功能保持不变，只是加密层发生变化
+
+变形代码(Metamorphic Code):
+
+每次传播时生成语法上完全不同的版本
+携带代码重写器，重写新代码
+功能相同但语义不同
+使用简单技术(如添加NOP指令、垃圾指令、寄存器置换)或高级技术(如函数重排序、程序流修改、数据结构修改)
+
+对检测的影响:
+
+多态代码使基于签名的检测失效，因为每次加密后的二进制特征都不同
+变形代码更进一步，连代码结构都发生变化，使得静态分析和模式匹配变得极其困难
+两者都要求安全工具采用更先进的检测技术，如行为分析或机器学习方法
+
+Q7: 分析恶意软件签名检测系统面临的主要挑战，并提出相应的解决方案。
+答案:
+主要挑战:
+
+新恶意软件不断出现: 签名数据库需要持续更新
+代码混淆技术: 恶意软件使用加壳、加密等技术隐藏特征
+多态和变形技术: 使传统签名失效
+误报和漏报: 需要平衡检测准确性
+
+解决方案:
+
+多层检测机制: 结合静态签名、动态行为分析和启发式检测
+机器学习方法: 使用AI技术识别恶意软件模式
+云端威胁情报: 实时更新签名数据库和威胁信息
+沙箱技术: 在隔离环境中分析可疑文件的行为
+YARA等高级规则引擎: 支持复杂模式匹配和布尔逻辑
+协作防御: 安全厂商间共享威胁情报和签名
