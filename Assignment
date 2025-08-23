@@ -1,0 +1,31 @@
+Task1 答案
+1. 这是可执行文件还是 DLL？
+分析: 在 File Header 的 Characteristics 字段中，弹出的提示显示 "File is executable"。
+答案: 这是一个可执行文件（.exe）。
+
+2. NT Header/PE Header 从哪个地址开始？
+分析: 在 DOS Header 部分，e_lfanew 字段（或称 File address of new exe header）的值指向了 PE Header 的起始地址。
+答案: PE Header 的起始地址是 80（十六进制）。
+
+3. 该 PE 文件包含多少个节以及它们是什么？
+分析: 在 Section Headers 部分，可以清楚地看到一个包含所有节的列表。
+答案: 该文件包含 3 个节，它们分别是 .text、.rsrc 和 .reloc。
+
+4. 入口点地址是什么？
+分析: 在 Optional Header 部分，AddressOfEntryPoint 字段的值就是入口点地址。在 PE-Bear 中，该字段显示为 Entry Point。
+答案: 入口点地址是 6B4E。
+
+5. 该二进制文件导入和导出了哪些函数？
+分析:
+在 Imports 部分，该文件从 mscoree.dll 导入了一个名为 _CorExeMain 的函数。
+在 Exports 部分，该列表为空。
+答案: 该文件从 mscoree.dll 导入了 _CorExeMain 函数，但没有导出任何函数。
+
+6. 该文件能否处理大型地址集？
+分析: 有多处证据可以证明：
+File Header 的 Characteristics 字段提示 "App can handle >2gb addresses"。
+Optional Header 的 Dll Characteristics 字段提示 "Image can handle a high entropy 64-bit virtual address"。
+Optional Header 的 Magic 字段值为 10B，表示这是一个 32 位可执行文件，能够处理大于 2GB 的地址空间。
+答案: 该文件能够处理大型地址集。
+
+Task2 答案
