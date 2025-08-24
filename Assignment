@@ -48,3 +48,6 @@ rule ransomware1_rule
       sha256(0) == "a872d7b04d9d3e9ace68ea1524d278bf35a24a4a1f9ec9f067cdfaf34a88c8a4"
 
 }
+
+Task3答案
+XZ Utils后门是一场非常复杂的供应链攻击。攻击者利用了一个名字为“Jia Tan”的恶意贡献者的身份，将恶意代码植入到开源压缩工具XZ Utils，该工具广泛应用于Linux。
