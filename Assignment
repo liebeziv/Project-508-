@@ -29,3 +29,22 @@ Optional Header 的 Magic 字段值为 10B，表示这是一个 32 位可执行�
 答案: 该文件能够处理大型地址集。
 
 Task2 答案
+rule ransomware1_rule
+{
+  meta:
+      author = "Zhengrong Chen"
+      description= "依照字符串和文件的属性检测可执行文件ransomware1.exe."
+      date = "2025-08-25"
+      version = "1.0"
+
+  strings:
+      $s1 = "mscoree.dll" wide ascii
+      $s2 = "_CoreExeMain" wide ascii
+
+  condition:
+      ($s1 and $ s2) and
+      pe.entry_point == 0x6B4E and
+      pe.number_of_ssections == 3 and
+      sha256(0) == "a872d7b04d9d3e9ace68ea1524d278bf35a24a4a1f9ec9f067cdfaf34a88c8a4"
+
+}
