@@ -51,6 +51,10 @@ rule ransomware1_rule
 
 Task3答案
 1.XZ Utils后门是一种复杂的供应链攻击，其核心思想是将恶意代码秘密地植入一个广泛使用的开源库中，从而使攻击者能够获得大量系统的远程控制。
-Exploitation：攻击者通过在版本5.6.0和5.6.1的XZ Utils库中植入恶意代码来利用这一漏洞。这个代码被巧妙地隐藏在压缩的测试文件内，只有在特定的编译环境下才会被激活。当被攻击的Linux系统启动时，sshd(OpenSSH server daemon）会加载
-被篡改的liblzma库。恶意代码通过利用glibc IFUNC机制，劫持了OpenSSH的一个函数（RSA_public_decrrypt)，使其能够执行攻击者的代码。
-Impact
+Exploitation：攻击者通过在版本5.6.0和5.6.1的XZ Utils库中植入恶意代码来利用这一漏洞。这个代码被巧妙地隐藏在压缩的测试文件内，只有在特定的编译环境下才会被激活。当被攻击的Linux系统启动时，sshd(OpenSSH server daemon）会加载被篡改的liblzma库。恶意代码通过利用glibc IFUNC机制，劫持了OpenSSH的一个函数（RSA_public_decrrypt)，使其能够执行攻击者的代码。
+Impact：该后门程序可以让攻击者在拥有特定私钥的情况下，绕过SSH认证，并在受影响的系统上远程执行任意代码，并且获得root权限。这意味着攻击者可以完全控制受感染的机器，包括窃取数据，安装其他恶意软件，或发起进一步攻击，对全球无数服务器构成严重威胁。
+
+2.这个漏洞是由微软的工程师和PostgreSQL开发者Andres Freund在一次例行调查中偶然发现的。
+例行调查：Freund在调查Debian Sid系统上的性能问题时，注意到sshd进程的CPU使用率异常高，且Valgrind报告了奇怪的错误。
+深入调查：这引起了Freund的警觉。他进一步深入调查，最终追踪到了libsystem库，并发现了代码被篡改，进而发现了隐藏在xz库中的恶意后门。
+及时公布：Freund在2024年3月29日将他的发现公开在Openwall邮件列表上，该行为引起了全球范围内使用者的警觉和响应，有效阻止了该后门在其他系统上的部署和利用。
