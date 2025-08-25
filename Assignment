@@ -44,10 +44,13 @@ rule ransomware1_rule
   condition:
       ($s1 and $ s2) and
       pe.entry_point == 0x6B4E and
-      pe.number_of_ssections == 3 and
+      pe.number_of_ssections == 3  and
       sha256(0) == "a872d7b04d9d3e9ace68ea1524d278bf35a24a4a1f9ec9f067cdfaf34a88c8a4"
 
 }
 
 Task3答案
-XZ Utils后门是一场非常复杂的供应链攻击。攻击者利用了一个名字为“Jia Tan”的恶意贡献者的身份，将恶意代码植入到开源压缩工具XZ Utils，该工具广泛应用于Linux。
+1.XZ Utils后门是一种复杂的供应链攻击，其核心思想是将恶意代码秘密地植入一个广泛使用的开源库中，从而使攻击者能够获得大量系统的远程控制。
+Exploitation：攻击者通过在版本5.6.0和5.6.1的XZ Utils库中植入恶意代码来利用这一漏洞。这个代码被巧妙地隐藏在压缩的测试文件内，只有在特定的编译环境下才会被激活。当被攻击的Linux系统启动时，sshd(OpenSSH server daemon）会加载
+被篡改的liblzma库。恶意代码通过利用glibc IFUNC机制，劫持了OpenSSH的一个函数（RSA_public_decrrypt)，使其能够执行攻击者的代码。
+Impact
