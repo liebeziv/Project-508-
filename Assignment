@@ -86,4 +86,21 @@ Task5答案：
 该代码实现了反虚拟机（Anti-VM）功能
 代码通过调用CreateToolhelp32Snapshot和Process32First/Process32Next函数来遍历所有正在运行中的进程。
 在if语句中，它检查每个进程中的可执行文件名(pe32.szExeFile)是否包含"VMware"或是“Vbox"。常见的虚拟机都会包含这类名称。
-如果检测到对应的字符串，
+如果检测到对应的字符串，代码将会打印"FINISH PROCESSING..."和"GOODBYE：）"的信息，并立刻退出程序。躲避在虚拟机中进行的恶意软件分析。
+
+3.代码3：持久化
+该代码实现了持久化功能，确保恶意软件可以在系统启动时自动运行
+代码使用“Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true)” 打开了Windows注册表中
+的Run键。
+使用regk.SetValue("backup", Application.ExecutablePath)将名为“backup”的新注册表键写入该键。
+Application.ExecutablePath代表当前恶意可执行文件的完整路径。通过将此路径写入Run键，Windows将在每次用户登录时自动执行该程序。
+
+4.代码4：权限提升或持久化
+该Powershell脚本旨在利用不安全的系统配置来实现权限提升
+代码获取“%PATH”环境变量中列出的所有目录。
+使用“Get-Acl”cmdlet检查每个目录的访问控制列表，以确定当前用户是（$curruser）是否具有"Write"或"FullControl"的权限。
+如果用户对某个目录有写入权限，脚本会开始执行Copy-Item命令，将一个名为"cmd.exe"的文件从用户的桌面“C:\Users\User\Desktop\cmd.exe”复制
+到该可写入的目录中。这种行为可以用于劫持合法命令或将恶意文件放置在系统路径中，从而在用户或系统执行常规命令时运行恶意外码。
+
+Task6答案：
+
