@@ -71,3 +71,19 @@ Hash2: d3adaf9006e37df3eed462ec9dee7eef30ac36e9
 威胁类别：Click-fraud，以及无文件恶意软件。属于Kovter恶意软件家族
 行为解释：
   文件行为：Kovter的特点是无文件。意味着在多数情况下，不依赖于系统上的可执行文件作为其主要恶意载荷。
+  注册表：该恶意软件利用了注册表作为其主要储存和执行机制。它会修改注册表键，并且将恶意代码注入其中，从而实现持久化的存在。主要功能是通过
+  这些注册表在后台执行点击欺诈活动。
+
+Task5答案：
+1.代码1：加密和数据持久化
+该代码实现了两种核心功能：数据加密和密钥持久化
+加密：代码使用了RijndaeManaged类来生成密钥（Rij.GenerateKey())以及初始化向量(Rij.GenerateIV())。使用一个名为encryptAES的函数对
+输入数据bhytes进行加密。这是一种对称加密算法，常用于勒索软件加密文件。
+持久化：代码通过Registry.CurrentUsser.OpenSubKey("Software\Microsoft", true);打开Windows注册表键。然后，它将生成的加密密钥和IV值
+分别以“KeyValue”和“IVvalue”的形式写入这个新创建的注册表键中。这种行为旨在保存加密所需的关键信息，以便恶意软件在后续运用时的使用。
+
+2.代码2：反虚拟机检测
+该代码实现了反虚拟机（Anti-VM）功能
+代码通过调用CreateToolhelp32Snapshot和Process32First/Process32Next函数来遍历所有正在运行中的进程。
+在if语句中，它检查每个进程中的可执行文件名(pe32.szExeFile)是否包含"VMware"或是“Vbox"。常见的虚拟机都会包含这类名称。
+如果检测到对应的字符串，
