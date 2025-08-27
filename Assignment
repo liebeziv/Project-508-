@@ -4,11 +4,11 @@ Part1 答案
 答案: 这是一个可执行文件（.exe）。
 
 2. NT Header/PE Header 从哪个地址开始？
-分析: 在 DOS Header 部分，e_lfanew 字段（或称 File address of new exe header）的值指向了 PE Header 的起始地址。
+分析: 在 DOS Header 部分，e_lfanew 字段的值指向了 PE Header 的起始地址。
 答案: PE Header 的起始地址是 80（十六进制）。
 
 3. 该 PE 文件包含多少个节以及它们是什么？
-分析: 在 Section Headers 部分，可以清楚地看到一个包含所有节的列表。
+分析: 在 Section Headers 部分，一个包含所有节的列表。
 答案: 该文件包含 3 个节，它们分别是 .text、.rsrc 和 .reloc。
 
 4. 入口点地址是什么？
